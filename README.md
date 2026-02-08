@@ -3,6 +3,7 @@
 A modern, full-stack library management system with role-based access control and responsive UI
 
 🎯 Overview
+
 A comprehensive web application for managing library operations including book inventory, user authentication, borrowing systems, and administrative controls. Built with Flask and featuring a modern, mobile-responsive interface.
 Key Highlights:
 
@@ -39,11 +40,17 @@ Gunicorn (Production WSGI server)
 📈 Future Enhancements
 
  Email notifications for overdue books
+ 
  Book reviews and ratings
+ 
  Advanced analytics dashboard
+ 
  Book reservation queue
+ 
  RESTful API for mobile apps
+ 
  Barcode scanning support
+ 
  Multi-language support
 
 📹VIDEO
