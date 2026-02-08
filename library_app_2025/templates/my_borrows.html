@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="h4 mb-3">My Borrowed Books</h2>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Book</th>
+        <th>Borrowed</th>
+        <th>Due Date</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in borrows %}
+      <tr>
+        <td>{{ b.book.title }}</td>
+        <td>{{ b.borrow_date.strftime('%Y-%m-%d') }}</td>
+        <td>{{ b.due_date.strftime('%Y-%m-%d') }}</td>
+        <td>
+          {% if b.return_date %}
+            <span class="badge text-bg-secondary">Returned on {{ b.return_date.strftime('%Y-%m-%d') }}</span>
+          {% elif b.is_overdue() %}
+            <span class="badge text-bg-danger">Overdue by {{ b.days_overdue() }} days</span>
+          {% else %}
+            <span class="badge text-bg-success">On loan</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if not b.return_date %}
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('return_book', borrow_id=b.id) }}">Return</a>
+          {% else %}
+            <button class="btn btn-sm btn-outline-secondary" disabled>Returned</button>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-muted">You haven't borrowed any books yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<a class="btn btn-outline-secondary" href="{{ url_for('view_books') }}">Back to Books</a>
+{% endblock %}

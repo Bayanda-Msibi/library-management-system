@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if current_user.is_authenticated %}
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>Welcome, {{ current_user.username }}! 👋</h1>
+            <p>Manage your library with ease. Browse books, track borrows, and more.</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Quick Actions</h2>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-3">
+                    <a href="{{ url_for('view_books') }}" style="text-decoration: none;">
+                        <div class="book-card">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📖</div>
+                            <h3 class="book-card-title">Browse Books</h3>
+                            <p class="book-card-author">Explore our collection and find your next read</p>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('my_borrows') }}" style="text-decoration: none;">
+                        <div class="book-card">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📋</div>
+                            <h3 class="book-card-title">My Borrows</h3>
+                            <p class="book-card-author">View your borrowed books and due dates</p>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('view_categories') }}" style="text-decoration: none;">
+                        <div class="book-card">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🏷️</div>
+                            <h3 class="book-card-title">Categories</h3>
+                            <p class="book-card-author">Browse books by category</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if current_user.role == 'admin' %}
+        <!-- Admin Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Admin Panel</h2>
+            </div>
+            <div class="card-body">
+                <div class="action-buttons">
+                    <a href="{{ url_for('add_book') }}" class="btn btn-primary">➕ Add New Book</a>
+                    <a href="{{ url_for('add_category') }}" class="btn btn-secondary">➕ Add Category</a>
+                    <a href="{{ url_for('export_books_csv') }}" class="btn btn-success">📊 Export CSV</a>
+                    <a href="{{ url_for('export_books_pdf') }}" class="btn btn-warning">📄 Export PDF</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    {% else %}
+        <!-- Guest Hero -->
+        <div class="hero">
+            <h1>Welcome to Library System 📚</h1>
+            <p>Your digital library management solution. Login or register to get started.</p>
+        </div>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
+                    <h2 style="margin-bottom: 1rem;">Already have an account?</h2>
+                    <p class="text-muted mb-3">Sign in to access your borrowed books and explore our collection.</p>
+                    <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                    <h2 style="margin-bottom: 1rem;">New here?</h2>
+                    <p class="text-muted mb-3">Create an account to start borrowing books from our library.</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-success">Register Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Features</h2>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-3">
+                    <div style="padding: 1rem;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚</div>
+                        <h3 style="margin-bottom: 0.5rem;">Vast Collection</h3>
+                        <p class="text-muted">Access thousands of books across multiple categories</p>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+                        <h3 style="margin-bottom: 0.5rem;">Easy Search</h3>
+                        <p class="text-muted">Find books quickly by title, author, or category</p>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏰</div>
+                        <h3 style="margin-bottom: 0.5rem;">Track Borrows</h3>
+                        <p class="text-muted">Keep track of your borrowed books and due dates</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Form (Original Feature) -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Quick Demo</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('greet') }}">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Enter your name to see a greeting:</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Your name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Greet Me</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

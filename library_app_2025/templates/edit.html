@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-5 mx-auto">
+    <div class="card p-4">
+      <h2 class="h4 mb-3">Edit Name</h2>
+      <form method="POST" action="{{ url_for('update_name', id=person.id) }}">
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input name="name" class="form-control" value="{{ person.name }}" required>
+        </div>
+        <div class="d-grid">
+          <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

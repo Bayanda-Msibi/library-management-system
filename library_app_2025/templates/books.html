@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Books - Library Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Page Header -->
+    <div class="toolbar">
+        <h1 class="toolbar-title">📖 Book Collection</h1>
+        <div class="toolbar-actions">
+            {% if current_user.role == 'admin' %}
+                <a href="{{ url_for('add_book') }}" class="btn btn-primary">➕ Add Book</a>
+            {% endif %}
+            <a href="{{ url_for('export_books_csv') }}" class="btn btn-success">📊 Export CSV</a>
+            <a href="{{ url_for('export_books_pdf') }}" class="btn btn-warning">📄 Export PDF</a>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="card">
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('view_books') }}">
+                <div class="search-bar">
+                    <input type="text" name="search" class="form-control search-input" 
+                           placeholder="🔍 Search by title or author..." 
+                           value="{{ search_query or '' }}">
+                    
+                    <div class="filter-group">
+                        <select name="category_id" class="form-control">
+                            <option value="">All Categories</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}" 
+                                    {% if selected_category_id == cat.id|string %}selected{% endif %}>
+                                    {{ cat.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <select name="filter" class="form-control">
+                            <option value="">All Books</option>
+                            <option value="available" {% if filter_by == 'available' %}selected{% endif %}>
+                                Available Only
+                            </option>
+                        </select>
+
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        {% if search_query or filter_by or category_id %}
+                            <a href="{{ url_for('view_books') }}" class="btn btn-secondary">Clear</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Books Display -->
+    {% if books %}
+        <div class="grid grid-2">
+            {% for book in books %}
+                <div class="book-card">
+                    <div>
+                        <h3 class="book-card-title">{{ book.title }}</h3>
+                        <p class="book-card-author">✍️ {{ book.author }}</p>
+                        
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            {% if book.category %}
+                                <span class="badge badge-info">{{ book.category.name }}</span>
+                            {% endif %}
+                            
+                            {% if book.quantity > 0 %}
+                                <span class="badge badge-success">{{ book.quantity }} Available</span>
+                            {% else %}
+                                <span class="badge badge-danger">Out of Stock</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="book-card-footer">
+                        <div class="action-buttons">
+                            {% if current_user.is_authenticated %}
+                                {% if book.quantity > 0 %}
+                                    <a href="{{ url_for('borrow_book', book_id=book.id) }}" 
+                                       class="btn btn-sm btn-success">📚 Borrow</a>
+                                {% else %}
+                                    <button class="btn btn-sm btn-secondary" disabled>Unavailable</button>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if current_user.role == 'admin' %}
+                                <a href="{{ url_for('edit_book', book_id=book.id) }}" 
+                                   class="btn btn-sm btn-warning">✏️ Edit</a>
+                                <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" 
+                                      style="display: inline;"
+                                      onsubmit="return confirm('Delete {{ book.title }}?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">🗑️ Delete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📚</div>
+                    <h3>No Books Found</h3>
+                    <p>
+                        {% if search_query or filter_by or category_id %}
+                            Try adjusting your search filters
+                        {% else %}
+                            No books in the library yet
+                        {% endif %}
+                    </p>
+                    {% if current_user.role == 'admin' and not search_query %}
+                        <a href="{{ url_for('add_book') }}" class="btn btn-primary mt-2">Add First Book</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
